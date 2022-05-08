@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="settings-popup.css">
+  </head>
+  <body>
+    <div id="list">
+    </div>
+
+    <div>
+      <form class="form-newpattern" id="form-newpattern">
+        <div class="form-newpattern__leftcontainer">
+          <input type="text" class="form-newpattern__patterninput" id="form-newpattern__patterninput" placeholder="https://*.google.com/*">
+        </div>
+        <div class="form-newpattern__midcontainer">
+          <input type="checkbox" class="form-newpattern__enable" id="form-newpattern__enable" checked>
+          <label for="inputenable">Loop?</label>
+        </div>
+        <div class="form-newpattern__rightcontainer">
+          <input type="submit" value="+" class="form-newpattern__plusbutton" id="form-newpattern__plusbutton">
+        </div>
+      </form>
+    </div>
+    <div>
+      <span class="error" id="error"></span>
+    </div>
+  </body>
+  <script type="module" src="settings-popup.js"></script>
+</html>
