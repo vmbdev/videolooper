@@ -25,7 +25,6 @@ class Sitelist {
           this.addElement(site.pattern, site.enabled, site.id);
 
         this.currentId = res.sitelist.at(-1).id + 1;
-        this.show();
       }
     });
   }
@@ -74,7 +73,15 @@ class Sitelist {
   }
 
   remove = (_id) => {
-    console.log(_id);
+    chrome.storage.local.get({ sitelist: [] }, (res) => {
+      let index = res.sitelist.findIndex(site => site.id == _id);
+      console.log("got: " + _id, "found" + index);
+      this.sites[index].remove();
+      this.sites.splice(index, 1);
+      res.sitelist.splice(index, 1);
+
+      chrome.storage.local.set({ sitelist: res.sitelist });
+    });
   }
 
   preparePattern = (_pattern) => {
