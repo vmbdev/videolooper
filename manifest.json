@@ -4,7 +4,7 @@
   "version": "0.2",
   "manifest_version": 3,
   "icons": {
-    "512": "assets/logo.png"
+    "512": "assets/icon128.png"
   },
   "action": {
     "default_title": "Video Looper",

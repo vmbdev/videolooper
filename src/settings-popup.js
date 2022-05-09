@@ -7,10 +7,10 @@ sitelist.build();
 
 const addNewPattern = () => {
   let input = document.getElementById("form-newpattern__patterninput");
-  let enableLoop = document.getElementById("form-newpattern__plusbutton").checked;
+  let loop = document.getElementById("form-newpattern__loopcheck").checked;
 
   if (input.value)
-    sitelist.add(input.value, enableLoop);
+    sitelist.add(input.value, loop);
   
   input.value = "";  
 }

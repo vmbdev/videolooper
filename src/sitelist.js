@@ -22,14 +22,14 @@ class Sitelist {
     chrome.storage.local.get({ sitelist: [] }, res => {
       if ((res.sitelist !== undefined) && (res.sitelist.length > 0)) {
         for (let site of res.sitelist)
-          this.addElement(site.pattern, site.enabled, site.id);
+          this.addElement(site.pattern, site.loop, site.id);
 
         this.currentId = res.sitelist.at(-1).id + 1;
       }
     });
   }
 
-  add = (_pattern, _enabled) => {
+  add = (_pattern, _loop) => {
     let regexp = this.preparePattern(_pattern);
 
     chrome.storage.local.get({ sitelist: [] }, (res) => {
@@ -37,22 +37,22 @@ class Sitelist {
         id: this.currentId,
         pattern: _pattern,
         regexp: regexp,
-        enabled: _enabled
+        loop: _loop
       });
 
       chrome.storage.local.set({ sitelist: res.sitelist }, () => {
         this.currentId++;
-        this.addElement(_pattern, _enabled, this.currentId);
+        this.addElement(_pattern, _loop, this.currentId);
       });
     });
 
   }
 
-  addElement = (_pattern, _enable, _id) => {
+  addElement = (_pattern, _loop, _id) => {
     let container = document.createElement("div");
     let removebutton = document.createElement("div");
     let patternElem = document.createElement("div");
-    let enableElem = document.createElement("div");
+    let loopElem = document.createElement("div");
 
     container.classList.add(`${this.cssPrefix}__item`);
     removebutton.classList.add(`${this.cssPrefix}__removebutton`);
@@ -60,13 +60,13 @@ class Sitelist {
     removebutton.appendChild(document.createTextNode("X"));
     patternElem.classList.add(`${this.cssPrefix}__patterninput`);
     patternElem.appendChild(document.createTextNode(_pattern));
-    enableElem.classList.add(`${this.cssPrefix}__loopcheck`);
-    enableElem.classList.add(`${this.cssPrefix}__loopcheck--${_enable ? "enable" : "disable"}`);
-    enableElem.appendChild(document.createTextNode(_enable ? "Enabled" : "Disabled"));
+    loopElem.classList.add(`${this.cssPrefix}__loopcheck`);
+    loopElem.classList.add(`${this.cssPrefix}__loopcheck--${_loop ? "enable" : "disable"}`);
+    loopElem.appendChild(document.createTextNode(_loop ? "Enabled" : "Disabled"));
 
     container.appendChild(removebutton);
     container.appendChild(patternElem);
-    container.appendChild(enableElem);
+    container.appendChild(loopElem);
 
     this.root.appendChild(container);
     this.sites.push(container);
