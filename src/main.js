@@ -1,6 +1,7 @@
 chrome.storage.local.get({ sitelist: [] }, (res) => {
   for (let site of res.sitelist) {
-    if (urlMatches(window.location.href, new RegExp(site.regexp, "i"))) {
+    if (window.location.href.match(new RegExp(site.regexp, "i")) !== null) {
+      console.log(`[Video Looper] Url matches existing pattern! ${site.loop ? "Enabling" : "Disabling"} loop in every video.`);
       const observer = new MutationObserver((mutationList) => {
         setLoops(mutationList, site.loop) }
       );
@@ -11,7 +12,6 @@ chrome.storage.local.get({ sitelist: [] }, (res) => {
   }
 });
 
-const urlMatches = (url, match) => !(url.match(match) === null);
 
 const setLoops = (mutationList, loop) => {
   for (const mutation of mutationList) {

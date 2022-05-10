@@ -41,11 +41,10 @@ class Sitelist {
       });
 
       chrome.storage.local.set({ sitelist: res.sitelist }, () => {
-        this.currentId++;
         this.addElement(_pattern, _loop, this.currentId);
+        this.currentId++;
       });
     });
-
   }
 
   addElement = (_pattern, _loop, _id) => {
@@ -75,7 +74,6 @@ class Sitelist {
   remove = (_id) => {
     chrome.storage.local.get({ sitelist: [] }, (res) => {
       let index = res.sitelist.findIndex(site => site.id == _id);
-      console.log("got: " + _id, "found" + index);
       this.sites[index].remove();
       this.sites.splice(index, 1);
       res.sitelist.splice(index, 1);

@@ -1,7 +1,7 @@
 {
   "name": "Video Looper",
   "description": "Control whether the videos of a website automatically loop or not",
-  "version": "0.2",
+  "version": "0.5",
   "manifest_version": 3,
   "icons": {
     "512": "assets/icon128.png"
@@ -16,6 +16,6 @@
   ],
   "content_scripts" : [{
     "js" : ["src/main.js"],
-    "matches": ["<all_urls>"]
+    "matches": ["*://*/*"]
   }]
 }
