@@ -9,7 +9,7 @@ class Sitelist {
 
       this.root.classList.add(this.cssPrefix);
       this.root.addEventListener("click", (event) => {
-        let id = event.target.dataset.id;
+        const id = event.target.dataset.id;
         if (id)
           this.remove(id);
       });
@@ -21,8 +21,9 @@ class Sitelist {
   build = () => {
     chrome.storage.local.get({ sitelist: [] }, res => {
       if ((res.sitelist !== undefined) && (res.sitelist.length > 0)) {
-        for (let site of res.sitelist)
+        for (const site of res.sitelist) {
           this.addElement(site.pattern, site.loop, site.id);
+        }
 
         this.currentId = res.sitelist.at(-1).id + 1;
       }
@@ -30,7 +31,7 @@ class Sitelist {
   }
 
   add = (_pattern, _loop) => {
-    let regexp = this.preparePattern(_pattern);
+    const regexp = this.preparePattern(_pattern);
 
     chrome.storage.local.get({ sitelist: [] }, (res) => {
       res.sitelist.push({
@@ -48,10 +49,10 @@ class Sitelist {
   }
 
   addElement = (_pattern, _loop, _id) => {
-    let container = document.createElement("div");
-    let removebutton = document.createElement("div");
-    let patternElem = document.createElement("div");
-    let loopElem = document.createElement("div");
+    const container = document.createElement("div");
+    const removebutton = document.createElement("div");
+    const patternElem = document.createElement("div");
+    const loopElem = document.createElement("div");
 
     container.classList.add(`${this.cssPrefix}__item`);
     removebutton.classList.add(`${this.cssPrefix}__removebutton`);
@@ -73,7 +74,7 @@ class Sitelist {
 
   remove = (_id) => {
     chrome.storage.local.get({ sitelist: [] }, (res) => {
-      let index = res.sitelist.findIndex(site => site.id == _id);
+      const index = res.sitelist.findIndex(site => site.id == _id);
       this.sites[index].remove();
       this.sites.splice(index, 1);
       res.sitelist.splice(index, 1);
@@ -83,17 +84,17 @@ class Sitelist {
   }
 
   preparePattern = (_pattern) => {
-    let rxUrlSplit = /((?:http|ftp)s?):\/\/([^\/]+)(\/.*)?/;
+    const rxUrlSplit = /((?:http|ftp)s?):\/\/([^\/]+)(\/.*)?/;
+    const parts = _pattern.match(rxUrlSplit);
     let preparedUrl = "";
-    let parts;
-    if ((parts = _pattern.match(rxUrlSplit)) !== null) {
-      preparedUrl =
-        parts[1] +
-        "://" +
-        parts[2]
+
+    if (parts) {
+      preparedUrl = parts[1] + "://";
+      preparedUrl += parts[2]
           .replace(/[?()[\]\\.+^$|]/g, "\\$&")
           .replace(/\*\\./g, "(?:[^/]*\\.)*")
           .replace(/\*$/, "[^/]*");
+  
       if (parts[3]) {
         preparedUrl += parts[3]
           .replace(/[?()[\]\\.+^$|]/g, "\\$&")
@@ -102,7 +103,7 @@ class Sitelist {
     }
 
     if (preparedUrl) {
-      let rx = "^" + preparedUrl + "$";
+      const rx = "^" + preparedUrl + "$";
       return rx;
     }
 
@@ -116,6 +117,5 @@ class Sitelist {
     });
   }
 }
-
 
 export default Sitelist;
