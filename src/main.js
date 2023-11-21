@@ -1,24 +1,28 @@
 chrome.storage.local.get({ sitelist: [] }, (res) => {
   for (const site of res.sitelist) {
-    if (window.location.href.match(new RegExp(site.regexp, "i")) !== null) {
-      console.log(`[Video Looper] Url matches existing pattern! ${site.loop ? "Enabling" : "Disabling"} loop in every video.`);
+    const regex = new RegExp(site.regexp, 'i');
+
+    if (regex.test(window.location.href)) {
       const observer = new MutationObserver((mutationList) => {
-        setLoops(mutationList, site.loop);
+        setLooping(mutationList, site.loop);
       });
       observer.observe(document.body, { childList: true, subtree: true });
+
+      console.log(
+        `[Video Looper] Url matches existing pattern!
+        ${site.loop ? 'Enabling' : 'Disabling'} loop in every video.`
+      );
 
       break;
     }
   }
 });
 
-
-const setLoops = (mutationList, loop) => {
+const setLooping = (mutationList, loop) => {
   for (const mutation of mutationList) {
-    if (mutation.type === "childList") {
+    if (mutation.type === 'childList') {
       for (const node of mutation.addedNodes) {
-        if (node.tagName === "VIDEO")
-          node.loop = loop;
+        if (node.tagName === 'VIDEO') node.loop = loop;
       }
     }
   }

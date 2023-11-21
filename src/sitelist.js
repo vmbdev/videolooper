@@ -1,26 +1,27 @@
 class Sitelist {
-  constructor(_root, __cssPrefix = "list") {
-    if (typeof _root === "object") {
-      this.root = _root;
-      this.sites = [];
-      this.currentId = 0;
+  currentId = 0;
+  sites = [];
+
+  constructor(root, cssPrefix = "list") {
+    if (typeof root === "object") {
+      this.root = root;
       // for reutilisation purposes, in case it clashes with other CSS classes
-      this.cssPrefix = __cssPrefix;
+      this.cssPrefix = cssPrefix;
 
       this.root.classList.add(this.cssPrefix);
       this.root.addEventListener("click", (event) => {
         const id = event.target.dataset.id;
-        if (id)
-          this.remove(id);
+
+        if (id) this.remove(id);
       });
     }
     else
       throw new Error("Root element must be an object");
   }
 
-  build = () => {
+  load() {
     chrome.storage.local.get({ sitelist: [] }, res => {
-      if ((res.sitelist !== undefined) && (res.sitelist.length > 0)) {
+      if (res.sitelist && res.sitelist.length > 0) {
         for (const site of res.sitelist) {
           this.addElement(site.pattern, site.loop, site.id);
         }
@@ -30,25 +31,25 @@ class Sitelist {
     });
   }
 
-  add = (_pattern, _loop) => {
-    const regexp = this.preparePattern(_pattern);
+  add(pattern, loop) {
+    const regexp = this.preparePattern(pattern);
 
     chrome.storage.local.get({ sitelist: [] }, (res) => {
       res.sitelist.push({
         id: this.currentId,
-        pattern: _pattern,
+        pattern: pattern,
         regexp: regexp,
-        loop: _loop
+        loop: loop
       });
 
       chrome.storage.local.set({ sitelist: res.sitelist }, () => {
-        this.addElement(_pattern, _loop, this.currentId);
+        this.addElement(pattern, loop, this.currentId);
         this.currentId++;
       });
     });
   }
 
-  addElement = (_pattern, _loop, _id) => {
+  addElement(pattern, loop, id) {
     const container = document.createElement("div");
     const removebutton = document.createElement("div");
     const patternElem = document.createElement("div");
@@ -56,13 +57,17 @@ class Sitelist {
 
     container.classList.add(`${this.cssPrefix}__item`);
     removebutton.classList.add(`${this.cssPrefix}__removebutton`);
-    removebutton.dataset.id = _id;
+    removebutton.dataset.id = id;
     removebutton.appendChild(document.createTextNode("X"));
     patternElem.classList.add(`${this.cssPrefix}__patterninput`);
-    patternElem.appendChild(document.createTextNode(_pattern));
+    patternElem.appendChild(document.createTextNode(pattern));
     loopElem.classList.add(`${this.cssPrefix}__loopcheck`);
-    loopElem.classList.add(`${this.cssPrefix}__loopcheck--${_loop ? "enable" : "disable"}`);
-    loopElem.appendChild(document.createTextNode(_loop ? "Enabled" : "Disabled"));
+    loopElem.classList.add(
+      `${this.cssPrefix}__loopcheck--${loop ? "enable" : "disable"}`
+    );
+    loopElem.appendChild(
+      document.createTextNode(loop ? "Enabled" : "Disabled")
+    );
 
     container.appendChild(removebutton);
     container.appendChild(patternElem);
@@ -72,9 +77,9 @@ class Sitelist {
     this.sites.push(container);
   }
 
-  remove = (_id) => {
+  remove(id) {
     chrome.storage.local.get({ sitelist: [] }, (res) => {
-      const index = res.sitelist.findIndex(site => site.id == _id);
+      const index = res.sitelist.findIndex(site => site.id == id);
       this.sites[index].remove();
       this.sites.splice(index, 1);
       res.sitelist.splice(index, 1);
@@ -83,9 +88,9 @@ class Sitelist {
     });
   }
 
-  preparePattern = (_pattern) => {
+  preparePattern(pattern) {
     const rxUrlSplit = /((?:http|ftp)s?):\/\/([^\/]+)(\/.*)?/;
-    const parts = _pattern.match(rxUrlSplit);
+    const parts = pattern.match(rxUrlSplit);
     let preparedUrl = "";
 
     if (parts) {
@@ -111,7 +116,7 @@ class Sitelist {
       throw new Error("Invalid pattern");
   }
 
-  show = () => {
+  show() {
     chrome.storage.local.get({ sitelist: [] }, (res) => {
       console.log(res.sitelist);
     });

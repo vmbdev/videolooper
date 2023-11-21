@@ -3,7 +3,7 @@ import Sitelist from './sitelist.js';
 const sitelist = new Sitelist(document.getElementById('list'));
 const form = document.getElementById('form-newpattern');
 
-sitelist.build();
+sitelist.load();
 
 const addNewPattern = () => {
   const input = document.getElementById('form-newpattern__patterninput');
@@ -15,7 +15,9 @@ const addNewPattern = () => {
 }
 
 const setError = (error) => {
-  if (error) document.getElementById('error').textContent = `Error: ${error}`;
+  if (error) {
+    document.getElementById('error').textContent = `Error: ${error}`;
+  }
 }
 
 const clearError = () => {
