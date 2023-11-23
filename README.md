@@ -18,7 +18,7 @@ subpaths (`https://google.com/`* instead of `https://google.com`).
 
 ## License
 
-fetch-reddit-media is licensed under the MIT License - see the
+Video Looper is licensed under the MIT License - see the
 [LICENSE](https://github.com/vmbdev/videolooper/blob/main/LICENSE)
 file for more details.
 
